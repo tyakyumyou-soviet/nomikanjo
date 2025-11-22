@@ -1,0 +1,46 @@
+{% extends "party/base.html" %}
+{% block title %}セッション一覧 - 飲み会勘定アプリ{% endblock %}
+{% block content %}
+<div class="container" id="app">
+  <header class="topbar">
+    <div>
+      <h1 class="title">飲み会勘定アプリ</h1>
+      <br><br><br>
+    </div>
+    <div>
+      <button class="btn secondary small" id="openCreateSession">＋ 新規セッション</button>
+    </div>
+  </header>
+
+  <main class="main-area">
+    <section id="home">
+      <div class="sessions-grid" id="sessionsGrid">
+        {% for s in sessions %}
+        <div class="session-card">
+          <h3>{{ s.name|escape }}</h3>
+          <p class="small muted">{{ s.store_name|default:"" }}</p>
+          <div class="meta" style="display:flex;gap:8px;align-items:center;margin-top:10px">
+            <div class="map-thumb" style="width:64px;height:40px;border-radius:8px;background:linear-gradient(180deg,#0b0b0b,#050505);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px">
+              {% if s.lat %}MAP{% else %}-{% endif %}
+            </div>
+            <div style="flex:1">
+              <div class="small muted">{{ s.created_at }}</div>
+              <div class="small muted">削除まで: 72時間以内</div>
+            </div>
+          </div>
+          <a class="open-btn btn small" href="{% url 'party:session_detail' s.id %}" style="position:absolute;right:12px;top:12px">開く</a>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="muted small">作成から 3 日が過ぎたセッションは自動で削除されます。</p>
+    </section>
+  <br><br><br>
+  </main>
+
+  <!-- overlay & modal regions -->
+  <div id="overlay" class="overlay hidden">
+    <div id="modal" class="modal" role="dialog" aria-modal="true"></div>
+  </div>
+  <div id="slideUp" class="slide-up hidden" role="dialog" aria-modal="true"></div>
+</div>
+{% endblock %}

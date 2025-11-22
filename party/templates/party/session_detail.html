@@ -1,0 +1,87 @@
+{% extends "party/base.html" %}
+{% block title %}{{ session.name }} - セッション{% endblock %}
+{% block content %}
+<div class="container" id="app" data-session-id="{{ session.id }}">
+  <header class="topbar">
+    <div>
+      <h1 class="title">飲み会勘定アプリ</h1>
+      <div class="subtitle">セッション: {{ session.name|escape }}</div>
+    </div>
+    <div>
+      <a class="btn secondary" href="{% url 'party:home' %}">← ホームに戻る</a>
+    </div>
+  </header>
+
+  <main class="main-area">
+    <section id="sessionScreen">
+      <div class="session-header">
+        <div>
+          <h2 id="sessionTitle">{{ session.name|escape }}</h2>
+          <div class="muted small" id="sessionMeta">{{ session.store_name|default:"" }}</div>
+        </div>
+      </div>
+
+      <div class="session-body">
+        <div class="members-strip" id="membersStrip"></div>
+
+        <div class="orders-area">
+          <div class="orders-list" id="ordersList"></div>
+        </div>
+
+        <br><br>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-bar" id="footerBar" role="contentinfo" aria-hidden="false">
+    <div class="footer-left" id="controlsCard">
+      <div class="small muted">クーポン / 割引</div>
+      <div class="row wrap" style="margin-top:8px">
+        <select id="discountType" class="input">
+          <option value="none">なし</option>
+          <option value="yen">円引き</option>
+          <option value="percent">%引き</option>
+        </select>
+        <input id="discountValue" class="input" type="number" placeholder="値" />
+      </div>
+      <div class="small muted" style="margin-top:8px">
+        税表示:
+        <label class="label-inline"><input type="radio" name="taxMode" value="inclusive" checked> 税込</label>
+        <label class="label-inline"><input type="radio" name="taxMode" value="exclusive"> 税抜</label>
+        <input id="taxRate" class="input small-input" type="number" value="10" /> %
+      </div>
+    </div>
+
+    <div class="footer-center" aria-hidden="true"></div>
+
+    <div class="footer-right total-card">
+      <div class="fr-top" style="display:flex;justify-content:flex-end;align-items:center;gap:12px">
+        <button class="btn primary" id="openReceiptView">会計(画像生成)</button>
+        <button class="btn secondary" id="openMobileControls">設定</button>
+      </div>
+
+      <div id="totalsBlock" style="text-align:right;margin-top:8px">
+        <div class="muted small">全体合計</div>
+        <div id="totalAmount" class="gold big">¥0</div>
+        <div class="muted small" id="appliedInfo"></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <button class="fab-in-footer" id="openAddOrder" title="注文を追加">＋</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- overlay / modal / slideup -->
+  <div id="overlay" class="overlay hidden">
+    <div id="modal" class="modal" role="dialog" aria-modal="true"></div>
+  </div>
+  <div id="slideUp" class="slide-up hidden" role="dialog" aria-modal="true"></div>
+
+  <!-- receipt modal -->
+  <div id="receiptModal" class="overlay hidden" style="align-items:flex-start;padding-top:40px">
+    <div class="modal" id="receiptContainer"></div>
+  </div>
+</div>
+{% endblock %}
